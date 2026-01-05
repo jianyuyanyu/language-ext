@@ -25,11 +25,11 @@ public static class Send<M, RT>
         from members   in Members<M, RT>.readAll
         from templates in Templates<M, RT>.loadDefault
         from letter    in Newsletter<M, RT>.make(posts, templates)
-        from _1        in Newsletter<M, RT>.save(letter)
-        from _2        in Display<M, RT>.showWhatsAboutToHappen(members)
-        from _3        in askUserToConfirmSend
-        from _4        in Email<M, RT>.sendToAll(members, letter)
-        from _5        in Display<M, RT>.confirmSent
+        from _         in Newsletter<M, RT>.save(letter) >>
+                          Display<M, RT>.showWhatsAboutToHappen(members) >>
+                          askUserToConfirmSend >>
+                          Email<M, RT>.sendToAll(members, letter) >>
+                          Display<M, RT>.confirmSent 
         select unit;
 
     static K<M, Unit> askUserToConfirmSend =>

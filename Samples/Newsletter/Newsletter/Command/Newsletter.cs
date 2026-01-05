@@ -26,8 +26,8 @@ public static class Newsletter<M, RT>
     /// </summary>
     public static K<M, Unit> save(Letter letter) =>
         from f in Config<M, RT>.lettersFolder
-        from h in File<M, RT>.writeAllText(Path.Combine(f, $"letter-{letter.PublishedAt:yyyy-MM-dd}.html"), letter.Html)
-        from t in File<M, RT>.writeAllText(Path.Combine(f, $"letter-{letter.PublishedAt:yyyy-MM-dd}.txt"), letter.PlainText)
+        from _ in File<M, RT>.writeAllText(Path.Combine(f, $"letter-{letter.PublishedAt:yyyy-MM-dd}.html"), letter.Html) >>
+                  File<M, RT>.writeAllText(Path.Combine(f, $"letter-{letter.PublishedAt:yyyy-MM-dd}.txt"), letter.PlainText)  
         select unit;
 }
 
