@@ -65,7 +65,7 @@ public partial class Game
     /// Deal the two initial cards to a player
     /// </summary>
     static Game<Unit> dealHand =>
-        from cs     in dealCard  >> dealCard
+        from cs     in dealCard >> dealCard
         from player in Player.current
         from state  in Player.state
         from _      in Display.playerState(player, state)
@@ -95,7 +95,7 @@ public partial class Game
     /// </summary>
     static Game<Unit> stickOrTwist =>
         when(isGameActive,
-             from _      in Display.askStickOrTwist >>>
+             from _      in Display.askStickOrTwist >>
                             Player.showCards
              from key    in Console.readKey
              from __     in key.Key switch
@@ -112,8 +112,8 @@ public partial class Game
     /// </summary>
     static Game<Unit> twist =>
         from card in Deck.deal
-        from _    in Player.addCard(card) >>>
-                     Display.showCard(card) >>>
+        from _    in Player.addCard(card) >>
+                     Display.showCard(card) >>
                      when(Player.isBust, Display.bust)
         select unit;
 
@@ -121,7 +121,7 @@ public partial class Game
     /// Berate the user for not following instructions!
     /// </summary>
     static K<Game, Unit> stickOrTwistBerate =>
-        Display.stickOrTwistBerate >>>
+        Display.stickOrTwistBerate >>
         stickOrTwist;
 
     /// <summary>
@@ -130,7 +130,7 @@ public partial class Game
     static Game<Unit> gameOver =>
         from ws in winners
         from ps in playersState
-        from _  in Display.winners(ws) >>>
+        from _  in Display.winners(ws) >>
                    Display.playerStates(ps)
         select unit;
 }
