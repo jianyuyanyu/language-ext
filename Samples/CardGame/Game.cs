@@ -12,18 +12,19 @@ public partial class Game
     /// <summary>
     /// Play the game!
     /// </summary>
-    public static K<Game, Unit> play =>
+    public static Game<Unit> play =>
         Display.askPlayerNames >>
         enterPlayerNames       >>
         Display.introduction   >>
         Deck.shuffle           >>
-        playHands;
+        playHands              >>
+        lower;
 
     /// <summary>
     /// Ask the users to enter their names until `enterPlayerName` returns `false`
     /// </summary>
     static Game<Unit> enterPlayerNames =>
-        when(enterPlayerName, lazy(() => enterPlayerNames)).As();
+        +when(enterPlayerName, lazy(() => enterPlayerNames));
 
     /// <summary>
     /// Wait for the user to enter the name of a player, then add them to the game 
@@ -37,8 +38,8 @@ public partial class Game
     /// Play many hands until the players decide to quit
     /// </summary>
     static Game<Unit> playHands =>
-        from _   in initPlayers >>>
-                    playHand >>>
+        from _   in initPlayers >>
+                    playHand >>
                     Display.askPlayAgain
         from key in Console.readKey
         from __  in when(key.Key == ConsoleKey.Y, playHands)
@@ -48,9 +49,9 @@ public partial class Game
     /// Play a single hand
     /// </summary>
     static Game<Unit> playHand =>
-        dealHands >>
-        playRound >>
-        gameOver  >>
+        dealHands              >>
+        playRound              >>
+        gameOver               >>
         Display.cardsRemaining >>
         lower;
 
@@ -74,9 +75,9 @@ public partial class Game
     /// Deal a single card
     /// </summary>
     static Game<Unit> dealCard =>
-        from card in Deck.deal
-        from _    in Player.addCard(card)
-        select unit;
+        Deck.deal      >>
+        Player.addCard >>
+        lower;
     
     /// <summary>
     /// For each active player, check if they want to stick or twist
